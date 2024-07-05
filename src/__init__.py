@@ -1,9 +1,9 @@
 from flask import Flask
-from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 import os
+from flask_migrate import Migrate
 from src.config import config_by_name
+from src.extensions import db, cors
+
 import src.models.user
 import src.models.review
 import src.models.place
@@ -12,9 +12,8 @@ import src.models.city
 import src.models.amenity
 import src.models.base
 
-cors = CORS()
-db = SQLAlchemy()
 migrate = Migrate()
+
 
 def create_app(config_name=None) -> Flask:
     """
@@ -68,13 +67,6 @@ def register_handlers(app: Flask) -> None:
     app.errorhandler(404)(lambda e: (
         {"error": "Not found", "message": str(e)}, 404
     ))
-    app.errorhandler(400)(
-        lambda e: (
-            {"error": "Bad request", "message": str(e)}, 400
-        )
-    )
-
-
-if __name__ == "__main__":
-    app = create_app()
-    app.run(debug=True)
+    app.errorhandler(400)(lambda e: (
+        {"error": "Bad request", "message": str(e)}, 400
+    ))

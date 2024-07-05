@@ -3,7 +3,7 @@ Country related functionality
 """
 
 from src.models.base import Base
-from src import db
+from src.extensions import db
 
 
 class Country(Base):

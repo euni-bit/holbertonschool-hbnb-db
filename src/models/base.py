@@ -1,15 +1,16 @@
 """
-Abstract base class for all models
+Abstract base class for all models.
 """
 
 from datetime import datetime
 from typing import Any, List, Optional
 import uuid
 from abc import abstractmethod
-from src import db
+from src.extensions import db
 
 
 class Base(db.Model):
+    """Abstract base class for all models."""
     __abstract__ = True
 
     id = db.Column(db.String(36), primary_key=True)
@@ -24,8 +25,8 @@ class Base(db.Model):
         **kwargs,
     ) -> None:
         """
-        Base class constructor
-        If kwargs are provided, set them as attributes
+        Base class constructor.
+        If kwargs are provided, set them as attributes.
         """
         super().__init__(**kwargs)
 
@@ -40,34 +41,34 @@ class Base(db.Model):
         self.updated_at = updated_at or datetime.now()
 
     @classmethod
-    def get(cls, id) -> "Any | None":
+    def get(cls, id) -> Optional[Any]:
         """
-        This is a common method to get an specific object
-        of a class by its id
+        This is a common method to get a specific object
+        of a class by its id.
 
         If a class needs a different implementation,
-        it should override this method
+        it should override this method.
         """
         return cls.query.get(id)
 
     @classmethod
     def get_all(cls) -> List[Any]:
         """
-        This is a common method to get all objects of a class
+        This is a common method to get all objects of a class.
 
         If a class needs a different implementation,
-        it should override this method
+        it should override this method.
         """
         return cls.query.all()
 
     @classmethod
     def delete(cls, id) -> bool:
         """
-        This is a common method to delete an specific
-        object of a class by its id
+        This is a common method to delete a specific
+        object of a class by its id.
 
         If a class needs a different implementation,
-        it should override this method
+        it should override this method.
         """
         obj = cls.get(id)
         if not obj:
@@ -78,14 +79,14 @@ class Base(db.Model):
 
     @abstractmethod
     def to_dict(self) -> dict:
-        """Returns the dictionary representation of the object"""
+        """Returns the dictionary representation of the object."""
 
     @staticmethod
     @abstractmethod
     def create(data: dict) -> Any:
-        """Creates a new object of the class"""
+        """Creates a new object of the class."""
 
     @staticmethod
     @abstractmethod
-    def update(entity_id: str, data: dict) -> Any | None:
-        """Updates an object of the class"""
+    def update(entity_id: str, data: dict) -> Optional[Any]:
+        """Updates an object of the class."""

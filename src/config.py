@@ -17,9 +17,10 @@ class Config:
 class DevelopmentConfig(Config):
     """
     Development configuration class.
-    Sets SQLALCHEMY_DATABASE_URI from environment variable or default to sqlite.
+    Sets SQLALCHEMY_DATABASE_URI from environment variable or
+    default to sqlite.
     Enables DEBUG and USE_DATABASE.
-    """  
+    """
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///dev.db')
     DEBUG = True
     USE_DATABASE = True
@@ -28,7 +29,8 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     """
     Testing configuration class.
-    Sets SQLALCHEMY_DATABASE_URI from environment variable or defaults to SQLite.
+    Sets SQLALCHEMY_DATABASE_URI from environment variable or defaults to
+    SQLite.
     Enables DEBUG, TESTING, and USE_DATABASE for testing environment.
     """
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///test.db')
@@ -40,7 +42,8 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     """
     Production configuration class.
-    Sets SQLALCHEMY_DATABASE_URI from environment variable or defaults to SQLite.
+    Sets SQLALCHEMY_DATABASE_URI from environment variable or defaults to
+    SQLite.
     Disables DEBUG and enables USE_DATABASE for production environment.
     """
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///prod.db')

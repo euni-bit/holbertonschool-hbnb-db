@@ -3,13 +3,21 @@ City related functionality
 """
 
 from src.models.base import Base
-from src import db
+from src.extensions import db
 
 
 class City(Base):
+    """City Class"""
     __tablename__ = 'cities'
-    name = db.Column(db.String(120), nullable=False)
-    country_id = db.Column(db.String(36), db.ForeignKey('countries.id'), nullable=False)
+    name = db.Column(
+        db.String(120),
+        nullable=False
+        )
+    country_id = db.Column(
+        db.String(36),
+        db.ForeignKey('countries.id'),
+        nullable=False
+        )
 
     def __init__(self, name: str, country_id: str, **kw) -> None:
         """Initialize a new city"""

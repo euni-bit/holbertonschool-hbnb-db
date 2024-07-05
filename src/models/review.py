@@ -3,14 +3,25 @@ Review related functionality
 """
 
 from src.models.base import Base
-from src import db
+from src.extensions import db
 
 
 class Review(Base):
     __tablename__ = 'reviews'
-    text = db.Column(db.Text, nullable=False)
-    user_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
-    place_id = db.Column(db.String(36), db.ForeignKey('places.id'), nullable=False)
+    text = db.Column(
+        db.Text,
+        nullable=False
+        )
+    user_id = db.Column(
+        db.String(36),
+        db.ForeignKey('users.id'),
+        nullable=False
+        )
+    place_id = db.Column(
+        db.String(36),
+        db.ForeignKey('places.id'),
+        nullable=False
+        )
 
     def __init__(self, text: str, user_id: str, place_id: str, **kw):
         """Initialize a new review"""
