@@ -1,12 +1,19 @@
+
+
 """ Initialize the Flask app. """
 
 from flask import Flask
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+import os
+from src.config import config_by_name
 
 cors = CORS()
+db = SQLAlchemy()
+migrate = Migrate()
 
-
-def create_app(config_class="src.config.DevelopmentConfig") -> Flask:
+def create_app(config_name=None) -> Flask:
     """
     Create a Flask app with the given configuration class.
     The default configuration class is DevelopmentConfig.
@@ -14,7 +21,13 @@ def create_app(config_class="src.config.DevelopmentConfig") -> Flask:
     app = Flask(__name__)
     app.url_map.strict_slashes = False
 
-    app.config.from_object(config_class)
+    if config_name is None:
+        config_name = os.getenv('FLASK_CONFIG', 'development')
+
+    app.config.from_object(config_by_name[config_name])
+
+    print(f"Running with configuration: {config_name}")
+    print(f"USE_DATABASE is set to: {app.config['USE_DATABASE']}")
 
     register_extensions(app)
     register_routes(app)
@@ -26,7 +39,8 @@ def create_app(config_class="src.config.DevelopmentConfig") -> Flask:
 def register_extensions(app: Flask) -> None:
     """Register the extensions for the Flask app"""
     cors.init_app(app, resources={r"/api/*": {"origins": "*"}})
-    # Further extensions can be added here
+    db.init_app(app)
+    migrate.init_app(app, db)
 
 
 def register_routes(app: Flask) -> None:
@@ -53,10 +67,21 @@ def register_handlers(app: Flask) -> None:
     """Register the error handlers for the Flask app."""
     app.errorhandler(404)(lambda e: (
         {"error": "Not found", "message": str(e)}, 404
-    )
-    )
+    ))
     app.errorhandler(400)(
         lambda e: (
             {"error": "Bad request", "message": str(e)}, 400
         )
     )
+
+import src.models.user
+import src.models.review
+import src.models.place
+import src.models.country
+import src.models.city
+import src.models.amenity
+import src.models.base
+
+if __name__ == "__main__":
+    app = create_app()
+    app.run(debug=True)

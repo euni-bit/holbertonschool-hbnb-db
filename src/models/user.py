@@ -1,73 +1,64 @@
 """
-User related functionality
+User model for the application
 """
 
+from typing import Any
+from src import db
 from src.models.base import Base
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class User(Base):
-    """User representation"""
+    __tablename__ = 'users'
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
 
-    email: str
-    first_name: str
-    last_name: str
-
-    def __init__(self, email: str, first_name: str, last_name: str, **kw):
-        """Dummy init"""
-        super().__init__(**kw)
+    def __init__(self, email: str, first_name: str, last_name: str, password: str, **kwargs) -> None:
+        super().__init__(**kwargs)
         self.email = email
         self.first_name = first_name
         self.last_name = last_name
+        self.password_hash = generate_password_hash(password)
 
-    def __repr__(self) -> str:
-        """Dummy repr"""
-        return f"<User {self.id} ({self.email})>"
+    def check_password(self, password: str) -> bool:
+        return check_password_hash(self.password_hash, password)
 
     def to_dict(self) -> dict:
-        """Dictionary representation of the object"""
         return {
             "id": self.id,
             "email": self.email,
             "first_name": self.first_name,
             "last_name": self.last_name,
-            "created_at": self.created_at.isoformat(),
-            "updated_at": self.updated_at.isoformat(),
         }
 
     @staticmethod
-    def create(user: dict) -> "User":
-        """Create a new user"""
-        from src.persistence import repo
+    def create(data: dict) -> Any:
+        # Check if a user with the same email already exists
+        existing_user = User.query.filter_by(email=data.get("email")).first()
+        if existing_user:
+            raise ValueError("A user with this email already exists.")
 
-        users: list["User"] = User.get_all()
-
-        for u in users:
-            if u.email == user["email"]:
-                raise ValueError("User already exists")
-
-        new_user = User(**user)
-
-        repo.save(new_user)
-
-        return new_user
+        user = User(
+            email=data.get("email"),
+            first_name=data.get("first_name"),
+            last_name=data.get("last_name"),
+            password=data.get("password")
+        )
+        db.session.add(user)
+        db.session.commit()
+        return user
 
     @staticmethod
-    def update(user_id: str, data: dict) -> "User | None":
-        """Update an existing user"""
-        from src.persistence import repo
-
-        user: User | None = User.get(user_id)
-
-        if not user:
+    def update(entity_id: str, data: dict) -> Any:
+        user = User.query.get(entity_id)
+        if user is None:
             return None
-
-        if "email" in data:
-            user.email = data["email"]
-        if "first_name" in data:
-            user.first_name = data["first_name"]
-        if "last_name" in data:
-            user.last_name = data["last_name"]
-
-        repo.update(user)
-
+        user.email = data.get("email", user.email)
+        user.first_name = data.get("first_name", user.first_name)
+        user.last_name = data.get("last_name", user.last_name)
+        if "password" in data:
+            user.password_hash = generate_password_hash(data["password"])
+        db.session.commit()
         return user
