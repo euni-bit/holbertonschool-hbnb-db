@@ -5,6 +5,7 @@ Review related functionality
 from src.models.base import Base
 from src import db
 
+
 class Review(Base):
     __tablename__ = 'reviews'
     text = db.Column(db.Text, nullable=False)

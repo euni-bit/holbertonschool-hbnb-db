@@ -5,16 +5,17 @@ Country related functionality
 from src.models.base import Base
 from src import db
 
+
 class Country(Base):
     __tablename__ = 'countries'
     name = db.Column(db.String(120), nullable=False)
     code = db.Column(db.String(2), nullable=False)
 
     def __init__(self, name: str, code: str, **kw):
-         """Initialize a new country"""
-         super().__init__(**kw)
-         self.name = name
-         self.code = code
+        """Initialize a new country"""
+        super().__init__(**kw)
+        self.name = name
+        self.code = code
 
     def __repr__(self) -> str:
         """String representation of the country"""
@@ -47,7 +48,7 @@ class Country(Base):
 
         if not country:
             return None
-        
+
         if "name" in data:
             country.name = data["name"]
         if "code" in data:

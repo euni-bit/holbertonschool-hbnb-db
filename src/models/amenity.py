@@ -5,19 +5,20 @@ Amenity related functionality
 from src.models.base import Base
 from src import db
 
+
 class Amenity(Base):
     __tablename__ = 'amenities'
     name = db.Column(db.String(120), nullable=False)
-    
+ 
     def __init__(self, name: str, **kw):
         """Initialize a new amenity"""
         super().__init__(**kw)
         self.name = name
-        
+ 
     def __repr__(self) -> str:
         """String representation of the amenity"""
         return f"<Amenity {self.id} ({self.name})>"
-        
+
     def to_dict(self) -> dict:
         """Dictionary representation of the amenity"""
         return {
@@ -52,4 +53,3 @@ class Amenity(Base):
         repo.update(amenity)
 
         return amenity
- 

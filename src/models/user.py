@@ -3,12 +3,14 @@ User model for the application
 """
 
 from typing import Any
-from src import db
 from src.models.base import Base
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class User(Base):
+    """User Class"""
+
+    from src import db
     __tablename__ = 'users'
     email = db.Column(db.String(120), unique=True, nullable=False)
     first_name = db.Column(db.String(50), nullable=False)

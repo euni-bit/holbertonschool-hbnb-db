@@ -1,13 +1,16 @@
-
-
-""" Initialize the Flask app. """
-
 from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import os
 from src.config import config_by_name
+import src.models.user
+import src.models.review
+import src.models.place
+import src.models.country
+import src.models.city
+import src.models.amenity
+import src.models.base
 
 cors = CORS()
 db = SQLAlchemy()
@@ -45,8 +48,6 @@ def register_extensions(app: Flask) -> None:
 
 def register_routes(app: Flask) -> None:
     """Import and register the routes for the Flask app"""
-
-    # Import the routes here to avoid circular imports
     from src.routes.users import users_bp
     from src.routes.countries import countries_bp
     from src.routes.cities import cities_bp
@@ -54,7 +55,6 @@ def register_routes(app: Flask) -> None:
     from src.routes.amenities import amenities_bp
     from src.routes.reviews import reviews_bp
 
-    # Register the blueprints in the app
     app.register_blueprint(users_bp)
     app.register_blueprint(countries_bp)
     app.register_blueprint(cities_bp)
@@ -74,13 +74,6 @@ def register_handlers(app: Flask) -> None:
         )
     )
 
-import src.models.user
-import src.models.review
-import src.models.place
-import src.models.country
-import src.models.city
-import src.models.amenity
-import src.models.base
 
 if __name__ == "__main__":
     app = create_app()

@@ -1,12 +1,13 @@
-""" 
-Abstract base class for all models 
+"""
+Abstract base class for all models
 """
 
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any, List, Optional
 import uuid
 from abc import abstractmethod
 from src import db
+
 
 class Base(db.Model):
     __abstract__ = True
@@ -14,7 +15,7 @@ class Base(db.Model):
     id = db.Column(db.String(36), primary_key=True)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, onupdate=db.func.current_timestamp())
-    
+
     def __init__(
         self,
         id: Optional[str] = None,
@@ -50,7 +51,7 @@ class Base(db.Model):
         return cls.query.get(id)
 
     @classmethod
-    def get_all(cls) -> list["Any"]:
+    def get_all(cls) -> List[Any]:
         """
         This is a common method to get all objects of a class
 

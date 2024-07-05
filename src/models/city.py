@@ -5,6 +5,7 @@ City related functionality
 from src.models.base import Base
 from src import db
 
+
 class City(Base):
     __tablename__ = 'cities'
     name = db.Column(db.String(120), nullable=False)
@@ -38,7 +39,7 @@ class City(Base):
         new_city = City(**city_data)
         repo.save(new_city)
         return new_city
-    
+
     @staticmethod
     def update(city_id: str, data: dict) -> "City | None":
         """Update an existing city"""
